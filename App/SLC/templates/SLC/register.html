@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{% url 'listagem_usuarios'%}" method="post">
+        {% csrf_token %}
+        <h3>Cadastro</h3>
+        <input name="usuario" type="text", name="username", placeholder="Digite seu nome de usuário">
+        <input name="senha" type="password", name="password", placeholder="Digite a sua senha">
+        <input type="submit", value="Cadastrar">
+    </form>
+</body>
+</html>
