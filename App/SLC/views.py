@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import  User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
+from .forms import ListaForm
+from .models import Lista
+
 
 
 
@@ -70,5 +73,41 @@ def sair(request):
 
 @login_required
 def home(request):
+    lista = Lista.objects.filter(user=request.user) 
+    return render(request, 'SLC/home.html', { 'lista' : lista })
+    
 
-    return render(request, 'SLC/home.html')
+@login_required
+def criando_lista(request):
+
+    if request.method == 'GET':
+        return render(request, 'SLC/home.html',{
+            'form':ListaForm
+        })
+    
+    else:
+
+        try:
+            form = ListaForm(request.POST)
+
+            nova_lista = form.save(commit=False)
+
+            nova_lista.user = request.user
+
+            nova_lista.save()
+
+            return redirect('home')
+        except ValueError:
+
+            return render(request,'SLC/home.html', {
+                'form' : ListaForm,
+                'error' : 'Favor inserir dados validos'
+            })     
+        
+@login_required  
+def deletar_tarefa(request):
+    lista = get_object_or_404(Lista, pk=request.POST['id'], user=request.user)
+
+    if request.method == 'POST':
+        lista.delete()
+        return redirect('home')

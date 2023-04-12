@@ -9,5 +9,22 @@
 <body>
     <h1>Seja bem vindo</h1>
     <a href="/sair">Sair</a>
+    <form action="criando/lista" method="post">
+        {% csrf_token %}
+        <input type="text", name="titulo", placeholder="Digite o nome do produto">
+        <input type="submit", value="Adicionar">
+        {{error}}
+    </form>
+    <div>
+        <h1>Lista de produtos</h1>
+        {% for item in lista%}
+            <h1>{{item.titulo}}</h1>
+            <form action="deletando/lista" method="post">
+                {% csrf_token %}
+                <input style='display: none;'value={{item.id}} name="id">
+                <button type="submit">X</button>
+            </form>
+        {% endfor%}
+    </div>
 </body>
 </html>
