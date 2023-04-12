@@ -7,12 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{% url 'listagem_usuarios'%}" method="post">
+    <form method="post">
         {% csrf_token %}
         <h3>Cadastro</h3>
-        <input name="usuario" type="text", name="username", placeholder="Digite seu nome de usuário">
-        <input name="senha" type="password", name="password", placeholder="Digite a sua senha">
+        <input name="usuario" type="text", placeholder="Digite seu nome de usuário">
+        <input name="senha" type="password" placeholder="Digite a sua senha">
+        <input name="senha2" type="password" placeholder="Confirme a sua senha">
         <input type="submit", value="Cadastrar">
+        {{error}}
     </form>
 </body>
 </html>

@@ -7,11 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    <form>
+    <h1>Login</h1>
+    <form method="post">
         {% csrf_token %}
-        <input type="text", name="username", placeholder="Username">
-        <input type="password", name="password", placeholder="Password">
+        <input type="text", name="usuario", placeholder="Username">
+        <input type="password", name="senha", placeholder="Password">
         <input type="submit", value="Login">
+        {{error}}
     </form>
 </body>
 </html>

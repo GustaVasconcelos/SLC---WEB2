@@ -1,19 +1,74 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import  User
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .models import Usuario
+
+
 
 def index(request):
-    return render(request,"SLC/index.html")
+
+    if request.method == 'GET':
+        return render(request,'SLC/index.html', {
+        'form': AuthenticationForm
+        })
+
+    else:
+        user = authenticate(
+
+            request, username=request.POST['usuario'], password=request.POST['senha'])
+
+        if user is None:
+            return render(request, 'SLC/index.html', {
+                    'form' : AuthenticationForm,
+                    'error': 'Usuário ou senha está incorreto'
+                })
+
+        else:
+                login(request, user)
+                return redirect('home')    
 
 def cadastro(request):
-    return render(request,"SLC/register.html")
+    if request.method == 'GET':
 
-def usuarios(request):
-    new_user = Usuario()
-    new_user.usuario = request.POST.get('usuario')
-    new_user.senha = request.POST.get('senha')
-    new_user.save()
+        return render(request,'SLC/register.html', {
+            'form' : UserCreationForm
+        } )   
 
-    return render(request,"SLC/register.html")
+    else: 
+        if request.POST['senha'] == request.POST['senha2']:
+
+            try: 
+                
+                user = User.objects.create_user(username=request.POST['usuario'], password=request.POST['senha'])
+                user.save()
+                
+                login(request, user)
+               
+                return redirect('home')
+                
+            except:
+                return render (request,'SLC/register.html', { 
+                    'form' : UserCreationForm ,
+                    "error": 'Usuário já existe'
+                    
+                    } ) 
+           
+        return render (request,'SLC/register.html', { 
+                    'form' : UserCreationForm ,
+                    "error": 'as senhas são diferentes'
+                    
+                    } ) 
+    
+@login_required   
+def sair(request):
+    logout (request)
+    return redirect('/')
+
+@login_required
+def home(request):
+
+    return render(request, 'SLC/home.html')
