@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,23 +9,43 @@
 </head>
 <body>
     <h1>Seja bem vindo</h1>
-    <a href="/sair">Sair</a>
+    <a href="/sair">Desconectar</a>
     <form action="criando/lista" method="post">
         {% csrf_token %}
-        <input type="text", name="titulo", placeholder="Digite o nome do produto">
+        <input type="text", name="titulo", placeholder="Digite o nome da lista">
         <input type="submit", value="Adicionar">
         {{error}}
     </form>
+    <hr>
     <div>
-        <h1>Lista de produtos</h1>
-        {% for item in lista%}
-            <h1>{{item.titulo}}</h1>
-            <form action="deletando/lista" method="post">
+        {% for lista in listas %}
+            <div style="display: flex; align-items: center; gap: 15px;">            
+                <h1>{{lista.titulo}}</h1>
+                <form action="deletando/lista" method="post">
+                    {% csrf_token %}
+                    <input style='display: none;'value={{lista.id}} name="id">
+                    <button type="submit">Deletar lista</button>
+                </form>
+            </div>
+
+            <form action="adicionando/lista" method="post">
                 {% csrf_token %}
-                <input style='display: none;'value={{item.id}} name="id">
-                <button type="submit">X</button>
+                <input style='display: none;'value={{lista.id}} name="id">
+                <input type="texto" name="texto" placeholder="Adicione o item"/>
+                <button type="submit">Adicionar</button>
             </form>
-        {% endfor%}
+            {% for item in lista.items.all %}
+                <div style="display: flex; align-items: center; gap: 15px;">        
+                    <h3>{{item.texto}}</h3>
+                    <form action="deletar/item" method="post">
+                        {% csrf_token %}
+                        <input style='display: none;'value={{item.id}} name="id">
+                        <button type="submit">Deletar item</button>
+                    </form>
+                </div>
+            {% endfor %}
+        <hr>
+        {% endfor %}
     </div>
 </body>
 </html>
